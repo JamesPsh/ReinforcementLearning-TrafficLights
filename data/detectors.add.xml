@@ -1,0 +1,26 @@
+<additional>
+  <laneAreaDetector file="NUL" freq="86400" id="top0A0_0" lanes="top0A0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="top0A0_1" lanes="top0A0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="B0A0_0" lanes="B0A0_0" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="B0A0_1" lanes="B0A0_1" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom0A0_0" lanes="bottom0A0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom0A0_1" lanes="bottom0A0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="left0A0_0" lanes="left0A0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="left0A0_1" lanes="left0A0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="top1B0_0" lanes="top1B0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="top1B0_1" lanes="top1B0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="C0B0_0" lanes="C0B0_0" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="C0B0_1" lanes="C0B0_1" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom1B0_0" lanes="bottom1B0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom1B0_1" lanes="bottom1B0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="A0B0_0" lanes="A0B0_0" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="A0B0_1" lanes="A0B0_1" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="top2C0_0" lanes="top2C0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="top2C0_1" lanes="top2C0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="right0C0_0" lanes="right0C0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="right0C0_1" lanes="right0C0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom2C0_0" lanes="bottom2C0_0" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="bottom2C0_1" lanes="bottom2C0_1" pos="38.599999999999994" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="B0C0_0" lanes="B0C0_0" pos="28.19999999999999" endPos="-1"/>
+  <laneAreaDetector file="NUL" freq="86400" id="B0C0_1" lanes="B0C0_1" pos="28.19999999999999" endPos="-1"/>
+</additional>
