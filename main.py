@@ -8,6 +8,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, Embedding
 from tensorflow.keras.optimizers import Adam
 
+from args import Args
 from config import Config
 from tools import RewardScaler, standardize
 from env import Env
@@ -17,18 +18,18 @@ np.random.seed(0)
 tf.random.set_seed(0)
 
 # args
-learning_rate  = 0.0001
-gamma          = 0.95
-gae_lambda     = 0.9
-ratio_clipping = 0.05
-entropy_coef   = 0.005
+learning_rate  = Args.learning_rate
+gamma          = Args.gamma
+gae_lambda     = Args.gae_lambda
+ratio_clipping = Args.ratio_clipping
+entropy_coef   = Args.entropy_coef
 
-k_epoch        = 3
-batch_size     = 32
-num_episode    = 1000
-action_dim     = 2
-path_configs   = ['data/sumo.sumocfg'] * 4
-path_weights   = 'data/model'
+k_epoch        = Args.k_epoch
+batch_size     = Args.batch_size
+num_episode    = Args.num_episode
+action_dim     = Args.action_dim
+path_configs   = Args.path_configs
+path_weights   = Args.path_weights
 
 
 def init_models(infos):
@@ -104,10 +105,10 @@ class PPOModel(tf.keras.Model):
 
 
 class Worker:
-    def __init__(self, config, path_config, name):
+    def __init__(self, infos, path_config, name):
         '''Initialize a worker with a given configuration.'''
-        self.env = Env(config, path_config, name)
-        self.models, _ = init_models(self.env.infos)
+        self.env = Env(infos, path_config, name)
+        self.models, _ = init_models(infos)
         self.scaler = RewardScaler(len(self.env.node_ids), gamma)
 
 
@@ -287,7 +288,7 @@ class Learner:
 
 # ray worker
 Worker_remote = ray.remote(Worker)
-def initialize_workers(config, path_configs, name):
+def initialize_workers(infos, path_configs, name):
     '''Initialize workers.'''
     num_workers = min(len(path_configs), os.cpu_count())
     selected_path_configs = path_configs[:num_workers]
@@ -297,7 +298,7 @@ def initialize_workers(config, path_configs, name):
     workers = []
     for i, path_config in enumerate(selected_path_configs):
         try:
-            worker = Worker_remote.remote(config, path_config, f'{name}_{i}')
+            worker = Worker_remote.remote(infos, path_config, f'{name}_{i}')
             workers.append(worker)
         except Exception as e:
             print(f"Error initializing worker {i}: {e}")
@@ -312,10 +313,9 @@ def set_worker_weights(workers, model_weights):
 
 def train():
 
-    config = Config()
-    learner = Learner(config.infos)
-    workers = initialize_workers(config, path_configs, name)
-    assert config.episode_step % batch_size == 0
+    infos = Config().infos
+    learner = Learner(infos)
+    workers = initialize_workers(infos, path_configs, name)
 
     model_weights = ray.put(learner.get_weights())
     set_worker_weights(workers, model_weights)
@@ -356,7 +356,7 @@ def train():
         # Save the weights
         learner.save_weights()
 
-        df_rewards.append({n:r for n, r in zip(config.node_ids, rewards)})
+        df_rewards.append({n:r for n, r in zip(Args.node_ids, rewards)})
         print(f'n_epi: {n_epi}, rewards: {rewards}')
         try:
             pd.DataFrame(df_rewards).to_csv(path_reward)
@@ -371,8 +371,8 @@ def train():
 
 def test():
 
-    config = Config()
-    agent = Worker(config, path_configs[0], name)
+    infos = Config().infos
+    agent = Worker(infos, path_configs[0], name)
     agent.load_weights()
     agent.env.gui = True
     deterministic = False

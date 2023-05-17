@@ -5,28 +5,30 @@ from collections import defaultdict
 
 from sumolib import checkBinary
 
+from args import Args
+
 
 class Env:
     '''This class is responsible for handling the traffic light optimization environment.'''
-    def __init__(self, config, path_config, name=0):
+    def __init__(self, infos, path_config, name=0):
         '''
         Initializes the environment with given information,
         configuration path and initial state path.
         '''
         self.path_config = path_config
-        self.infos = config.infos
-        self.node_ids = config.node_ids
+        self.infos = infos
+        self.node_ids = Args.node_ids
         assert list(self.node_ids) == list(self.infos)
         self.path_init_state = f'data/init_state_{name}'
         assert not os.path.exists(self.path_init_state)
-        self.gui = config.gui
+        self.gui = Args.gui
 
-        self.e2_length = config.e2_length
-        self.yellow_length = config.yellow_length
-        self.step_length = config.step_length
-        self.rest_length = self.step_length - self.yellow_length
-        self.episode_length = config.episode_length
-        self.episode_step = config.episode_step
+        self.e2_length      = Args.e2_length
+        self.yellow_length  = Args.yellow_length
+        self.step_length    = Args.step_length
+        self.rest_length    = self.step_length - self.yellow_length
+        self.episode_length = Args.episode_length
+        self.episode_step   = Args.episode_step
 
         self.name = name
 

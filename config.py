@@ -1,26 +1,23 @@
 from collections import OrderedDict, defaultdict
 from sumolib.net import readNet
 
+from args import Args
+
 
 class Config:
     def __init__(self):
 
         # path
-        self.path_network   = 'data/sumo.net.xml'
-        self.path_detectors = 'data/detectors.add.xml'
+        self.path_network   = Args.path_network
+        self.path_detectors = Args.path_detectors
 
         # intersection ids
-        self.node_ids = ('A0', 'B0', 'C0')
-        
-        # args
-        self.gui = False
-        self.e2_length = 150
-        self.yellow_length = 5
-        self.step_length = 10
-        self.episode_length = 7360
+        self.node_ids = Args.node_ids
 
-        self.episode_step = self.episode_length // self.step_length
-        assert self.episode_length % self.step_length == 0
+        # detector length
+        self.e2_length = Args.e2_length
+
+        # setup
         self.infos = self.set_intersections()
 
 
