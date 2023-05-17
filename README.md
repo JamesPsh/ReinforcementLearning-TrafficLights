@@ -7,11 +7,12 @@
 ## Installation
 
 Before running the project, please install the following dependencies:
-
-pip install ray
-pip install pandas
+~~~
+pip install ray  
+pip install pandas 
 pip install sumolib
 pip install tensorflow
+~~~
 
 ## SUMO (Simulation of Urban MObility)
 
