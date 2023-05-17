@@ -1,0 +1,22 @@
+<edges>
+    <edge id="A0B0" from="A0" to="B0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="A0bottom0" from="A0" to="bottom0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="A0left0" from="A0" to="left0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="A0top0" from="A0" to="top0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="B0A0" from="B0" to="A0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="B0C0" from="B0" to="C0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="B0bottom1" from="B0" to="bottom1" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="B0top1" from="B0" to="top1" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="C0B0" from="C0" to="B0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="C0bottom2" from="C0" to="bottom2" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="C0right0" from="C0" to="right0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="C0top2" from="C0" to="top2" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="bottom0A0" from="bottom0" to="A0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="bottom1B0" from="bottom1" to="B0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="bottom2C0" from="bottom2" to="C0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="left0A0" from="left0" to="A0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="right0C0" from="right0" to="C0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="top0A0" from="top0" to="A0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="top1B0" from="top1" to="B0" priority="-1" numLanes="2" speed="13.89"/>
+    <edge id="top2C0" from="top2" to="C0" priority="-1" numLanes="2" speed="13.89"/>
+</edges>

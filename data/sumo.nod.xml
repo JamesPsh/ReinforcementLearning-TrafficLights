@@ -1,0 +1,15 @@
+<nodes>
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,800.00,400.00" origBoundary="0.00,0.00,800.00,400.00" projParameter="!"/>
+
+    <node id="A0" x="200.00" y="200.00" type="traffic_light" tl="A0"/>
+    <node id="B0" x="400.00" y="200.00" type="traffic_light" tl="B0"/>
+    <node id="C0" x="600.00" y="200.00" type="traffic_light" tl="C0"/>
+    <node id="bottom0" x="200.00" y="0.00" type="dead_end" fringe="outer"/>
+    <node id="bottom1" x="400.00" y="0.00" type="dead_end" fringe="outer"/>
+    <node id="bottom2" x="600.00" y="0.00" type="dead_end" fringe="outer"/>
+    <node id="left0" x="0.00" y="200.00" type="dead_end" fringe="outer"/>
+    <node id="right0" x="800.00" y="200.00" type="dead_end" fringe="outer"/>
+    <node id="top0" x="200.00" y="400.00" type="dead_end" fringe="outer"/>
+    <node id="top1" x="400.00" y="400.00" type="dead_end" fringe="outer"/>
+    <node id="top2" x="600.00" y="400.00" type="dead_end" fringe="outer"/>
+</nodes>
