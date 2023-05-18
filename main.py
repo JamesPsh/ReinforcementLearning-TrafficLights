@@ -2,6 +2,7 @@ import os
 import ray
 import numpy as np
 import pandas as pd
+from time import time
 from collections import defaultdict
 
 import tensorflow as tf
@@ -364,6 +365,7 @@ def train():
     for n_epi in range(num_episode):
         futures = [worker.reset.remote() for worker in workers]
         ray.wait(futures, num_returns=len(workers))
+        epi_start = time()
 
         while True:
 
@@ -395,8 +397,11 @@ def train():
         # Save the weights
         learner.save_weights()
 
+        # runtime
+        runtime = np.round(time() - epi_start)
+
         df_rewards.append({n:r for n, r in zip(Args.node_ids, rewards)})
-        print(f'n_epi: {n_epi}, rewards: {rewards}')
+        print(f'n_epi: {n_epi}, runtime: {runtime}, rewards: {rewards}')
         try:
             pd.DataFrame(df_rewards).to_csv(path_reward)
         except Exception as e:
