@@ -1,7 +1,7 @@
 class Args:
 
     # num workers
-    num_workers    = 4
+    num_workers    = 3
 
     # path
     path_network   = 'data/sumo.net.xml'
@@ -20,11 +20,11 @@ class Args:
     episode_step   = episode_length // step_length
     num_episode    = 500
 
-    learning_rate  = 0.0001
+    learning_rate  = 0.0005
     gamma          = 0.95
     gae_lambda     = 0.9
     ratio_clipping = 0.05
-    entropy_coef   = 0.005
+    entropy_coef   = 0.01
     k_epoch        = 3
     batch_size     = 32
     action_dim     = 2
