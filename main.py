@@ -228,8 +228,15 @@ class Worker:
 
     def set_weights(self, model_weights):
         '''Set model weights.'''
-        for i, model in enumerate(self.models):
-            model.set_weights(model_weights[i])
+        try:
+            for i, model in enumerate(self.models):
+                model.set_weights(model_weights[i])
+        except ValueError as ve:
+            print(f"ValueError occurred while setting weights: {ve}")
+            raise ve
+        except Exception as e:
+            print(f"Unexpected error occurred while setting weights: {e}")
+            raise e
 
 
     def load_weights(self):
