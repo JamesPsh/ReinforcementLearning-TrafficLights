@@ -416,9 +416,11 @@ def test():
     agent.env.gui = True
     deterministic = False
 
-    s = agent.env.reset()
+    agent.reset()
+    s = agent.states
+    h = agent.hiddens
     while True:
-        a, p = agent.get_actions(s, deterministic)
+        a, p, h = agent.get_actions(s, h, deterministic)
         s, r, done, global_reward = agent.env.step(a)
         print(f'p: {np.round(p, 2)}, global_reward: {np.round(global_reward, 2)}')
         if done:
