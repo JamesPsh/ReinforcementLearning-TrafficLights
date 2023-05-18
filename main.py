@@ -5,7 +5,7 @@ import pandas as pd
 from collections import defaultdict
 
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Embedding
+from tensorflow.keras.layers import Dense, Embedding, LSTM
 from tensorflow.keras.optimizers import Adam
 
 from args import Args
@@ -63,11 +63,14 @@ class PPOModel(tf.keras.Model):
         self.d0 = d0
         self.d1 = d1
         self.discrete_dim = discrete_dim
+        self.rnn_units = 64
 
         self.fc00 = Dense(64, 'relu')
         self.fc01 = Dense(64, 'relu')
         self.fc02 = Dense(64, 'relu')
         self.embs = [Embedding(emb_input_dim, 32) for _ in range(self.discrete_dim)]
+
+        self.rnn = LSTM(self.rnn_units, return_sequences=True, return_state=True)
 
         self.fc10 = Dense(64, 'relu')
         self.fc11 = Dense(64, 'relu')
@@ -77,26 +80,33 @@ class PPOModel(tf.keras.Model):
         self.node_id = node_id
 
 
-    def call(self, state, return_type='both'):
+    def call(self, state, hidden=None, return_type='both'):
         x0 = state[:, :self.d0]  # occupancy
         x1 = state[:, self.d0:self.d1]  # queue
         x2 = state[:, -self.discrete_dim:]  # phase
+
+        if hidden is None:
+            hidden = [tf.zeros((1, self.rnn_units)), tf.zeros((1, self.rnn_units))]
 
         x0 = self.fc00(x0)
         x1 = self.fc01(x1)
         x2 = [emb(x2[:, i]) for i, emb in enumerate(self.embs)]
         x2 = tf.concat(x2, axis=-1)
         x2 = self.fc02(x2)
-        
+
         x = tf.concat([x0, x1, x2], axis=1)
+        x = tf.expand_dims(x, axis=0)
+        x, h, c = self.rnn(x, initial_state=hidden)
+        x = tf.squeeze(x, axis=0)
+
         x = self.fc10(x)
         x = self.fc11(x)
         
         if return_type == 'both':
-            return self.policy(x), self.v_value(x)
+            return self.policy(x), self.v_value(x), [h, c]
 
         elif return_type == 'policy':
-            return self.policy(x)
+            return self.policy(x), [h, c]
 
         elif return_type == 'v_value':
             return self.v_value(x)
@@ -112,27 +122,39 @@ class Worker:
         self.scaler = RewardScaler(len(self.env.node_ids), gamma)
 
 
-    def get_actions(self, states, deterministic=False):
+    def get_init_hidden(self, model):
+        units = model.rnn_units
+        hidden = [tf.zeros((1, units), tf.float32), tf.zeros((1, units), tf.float32)]
+        return hidden
+
+
+    def get_actions(self, states, hiddens, deterministic=False):
         '''Calculate actions and policies for given states.'''
-        actions, policies = [], []
+        actions, policies, new_hiddens = [], [], []
         for i, model in enumerate(self.models):
+
             s = states[i].reshape((1, -1))
-            p = model(s, 'policy').numpy()[0]
+            h = hiddens[i]
+
+            p, new_h = model(s, h, 'policy')
+            p = p.numpy()[0]
             if deterministic:
                 a = np.argmax(p)
             else:
                 a = np.random.choice(np.arange(len(p)), p=p)
             actions.append(a)
             policies.append(p[a])
-        return actions, policies
+            new_hiddens.append(new_h)
+        return actions, policies, new_hiddens
 
 
     def get_trajectory_segment(self):
         '''Get a segment of the trajectory.'''
         segment = defaultdict(list)
         s = self.states
-        for _ in range(batch_size):
-            a, p = self.get_actions(s)
+        h = self.prev_hiddens_0 = self.hiddens
+        for i in range(batch_size):
+            a, p, next_h = self.get_actions(s, h)
             next_s, r, done, global_reward = self.env.step(a)
 
             r = np.array(r, dtype=np.float32)
@@ -145,7 +167,12 @@ class Worker:
             segment['old_pi_a'].append(p)
             done_mask = [0 if done else 1] * len(a)
             segment['done_masks'].append(done_mask)
+
+            if i == 0:
+                self.prev_hiddens_1 = next_h
+
             s = next_s
+            h = next_h
             self.global_reward += global_reward
 
             if done:
@@ -156,6 +183,7 @@ class Worker:
         self.make_batch(segment)
         self.segment = segment
         self.states = s
+        self.hiddens = h
         return self.global_reward, done
 
 
@@ -174,11 +202,12 @@ class Worker:
             s, a, r, next_s = segment['s'][i], segment['a'][i], segment['r'][i], segment['next_s'][i]
             old_pi_a = segment['old_pi_a'][i]
             done_mask = segment['done_masks'][i]
+            h0, h1 = self.prev_hiddens_0[i], self.prev_hiddens_1[i]
             with tf.GradientTape() as tape:
 
                 # Forward passes
-                v = model(s, 'v_value')
-                next_v = model(next_s, 'v_value')
+                v = model(s, h0, 'v_value')
+                next_v = model(next_s, h1, 'v_value')
 
                 # Compute TD target and delta
                 td_target = r + gamma * next_v.numpy() * done_mask
@@ -197,7 +226,7 @@ class Worker:
                 # https://github.com/kengz/SLM-Lab/blob/master/slm_lab/agent/algorithm/actor_critic.py#LL261C45-L261C87
                 advs = standardize(advs)
 
-                pi = model(s, 'policy')
+                pi, _ = model(s, h0, 'policy')
                 pi_a = tf.gather(pi, a, axis=1, batch_dims=1)
                 log_pi_a = tf.math.log(tf.clip_by_value(pi_a, 1e-10, 1.0))
                 log_old_pi_a = tf.math.log(tf.clip_by_value(old_pi_a, 1e-10, 1.0))
@@ -257,6 +286,9 @@ class Worker:
     def reset(self):
         '''Resets the environment and other parameters.'''
         self.segment = None
+        self.hiddens = [self.get_init_hidden(m) for m in self.models]
+        self.prev_hiddens_0 = None
+        self.prev_hiddens_1 = None
         self.global_reward = 0
         self.states = self.env.reset()
 
