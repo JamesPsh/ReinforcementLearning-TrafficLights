@@ -94,8 +94,9 @@ class PPOModel(tf.keras.Model):
         x2 = [emb(x2[:, i]) for i, emb in enumerate(self.embs)]
         x2 = tf.concat(x2, axis=-1)
         x2 = self.fc02(x2)
-
         x = tf.concat([x0, x1, x2], axis=1)
+
+        # process sequence
         x = tf.expand_dims(x, axis=0)
         x, h, c = self.rnn(x, initial_state=hidden)
         x = tf.squeeze(x, axis=0)
