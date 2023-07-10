@@ -81,6 +81,12 @@ class PPOModel(tf.keras.Model):
         self.node_id = node_id
 
 
+    def rnn_forward_pass(self, x, hidden):
+        x = tf.expand_dims(x, axis=0)
+        x, h, c = self.rnn(x, initial_state=hidden)
+        return tf.squeeze(x, axis=0), h, c
+
+
     def call(self, state, hidden=None, return_type='both'):
         x0 = state[:, :self.d0]  # occupancy
         x1 = state[:, self.d0:self.d1]  # queue
@@ -97,9 +103,7 @@ class PPOModel(tf.keras.Model):
         x = tf.concat([x0, x1, x2], axis=1)
 
         # process sequence
-        x = tf.expand_dims(x, axis=0)
-        x, h, c = self.rnn(x, initial_state=hidden)
-        x = tf.squeeze(x, axis=0)
+        x, h, c = self.rnn_forward_pass(x, hidden)
 
         x = self.fc10(x)
         x = self.fc11(x)
