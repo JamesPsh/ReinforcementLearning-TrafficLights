@@ -1,7 +1,7 @@
 class Args:
 
     # num workers
-    num_workers    = 3
+    num_workers    = 4
 
     # path
     path_network   = 'data/sumo.net.xml'
@@ -18,7 +18,7 @@ class Args:
     step_length    = 10
     episode_length = 7360
     episode_step   = episode_length // step_length
-    num_episode    = 500
+    num_episode    = 1000
 
     learning_rate  = 0.0005
     gamma          = 0.95
