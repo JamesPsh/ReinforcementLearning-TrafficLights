@@ -156,10 +156,6 @@ class Env:
             self.prev_phases[node_id] = phase
 
 
-    def get_random_actions(self):
-        return [np.random.choice([0, 1]) for _ in self.node_ids]
-
-
     def step(self, actions):
         '''Performs a step in the simulation based on the given actions.'''
         
