@@ -14,10 +14,7 @@ alt="Traffic Signal Control with Reinforcement Learning: A Real Project Tutorial
 
 Before running the project, please install the following dependencies:
 ~~~
-pip install ray  
-pip install pandas 
-pip install sumolib
-pip install tensorflow
+pip install ray pandas sumolib tensorflow==2.13
 ~~~
 
 ## SUMO (Simulation of Urban MObility)
