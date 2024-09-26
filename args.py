@@ -1,6 +1,8 @@
 class Args:
 
-    # num workers
+    '''Args class defines key parameters for training and simulation.'''
+
+    # num workers: Number of workers for parallel processing
     num_workers    = 4
 
     # path
@@ -12,6 +14,7 @@ class Args:
     # intersection ids
     node_ids = ('A0', 'B0', 'C0')
     
+    # Simulation settings
     gui            = False
     e2_length      = 150
     yellow_length  = 5
@@ -20,6 +23,7 @@ class Args:
     episode_step   = episode_length // step_length
     num_episode    = 1000
 
+    # Reinforcement learning hyperparameters
     learning_rate  = 0.0005
     gamma          = 0.95
     gae_lambda     = 0.9
